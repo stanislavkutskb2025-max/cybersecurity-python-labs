@@ -97,11 +97,11 @@ def print_users_table(users_db: list):
         print("Немає даних для відображення.")
         return
 
-    # Заголовок таблиці
+
     print(f"{'Логін':<20} | {'Хеш пароля':<56}")
     print("-" * 80)
 
-    # Рядки таблиці
+
     for username, hash_value in users_db:
         print(f"{username:<20} | {hash_value:<56}")
 
