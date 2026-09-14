@@ -1,0 +1,68 @@
+[
+    {
+        "event": "login",
+        "user": "alex_admin",
+        "result": "success",
+        "timestamp": "2026-09-14 21:56:42",
+        "args": [
+            "alex_admin",
+            "SecurePass2026!"
+        ],
+        "kwargs": {}
+    },
+    {
+        "event": "login",
+        "user": "kate_m",
+        "result": "failure",
+        "timestamp": "2026-09-14 21:56:42",
+        "args": [
+            "kate_m",
+            "WrongPass123"
+        ],
+        "kwargs": {}
+    },
+    {
+        "event": "login",
+        "user": "",
+        "result": "failure",
+        "timestamp": "2026-09-14 21:56:42",
+        "args": [
+            "",
+            ""
+        ],
+        "kwargs": {}
+    },
+    {
+        "event": "login",
+        "user": "alex_admin",
+        "result": "success",
+        "timestamp": "2026-09-14 23:16:46",
+        "args": [
+            "alex_admin",
+            "SecurePass2026!"
+        ],
+        "kwargs": {}
+    },
+    {
+        "event": "login",
+        "user": "kate_m",
+        "result": "failure",
+        "timestamp": "2026-09-14 23:16:46",
+        "args": [
+            "kate_m",
+            "WrongPass123"
+        ],
+        "kwargs": {}
+    },
+    {
+        "event": "login",
+        "user": "",
+        "result": "failure",
+        "timestamp": "2026-09-14 23:16:46",
+        "args": [
+            "",
+            ""
+        ],
+        "kwargs": {}
+    }
+]
