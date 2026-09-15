@@ -7,7 +7,7 @@ import sys
 from datetime import datetime
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
-from shared.student import VARIANT_NUMBER
+from shared.student import GROUP_NAME, STUDENT_NAME, VARIANT_NUMBER
 
 
 class ValidationError(Exception):
@@ -175,6 +175,10 @@ def login(username: str, password: str) -> bool:
 
 # 8.
 def main():
+    print(
+        f"Студент: {STUDENT_NAME} | Група: {GROUP_NAME} | Варіант: {VARIANT_NUMBER}\n"
+    )
+
     try:
         print("=== 1. Створення бази даних ===")
         create_users(users_to_register)
