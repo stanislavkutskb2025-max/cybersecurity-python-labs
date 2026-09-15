@@ -5,8 +5,6 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 from shared.student import GROUP_NAME, STUDENT_NAME, VARIANT_NUMBER
 
-# варіант 2
-
 passwords = [
     "Hello123!",
     "simple",
@@ -40,22 +38,36 @@ def get_password_category(pwd):
     )
     has_lower = any(c.islower() for c in pwd)
 
-    all_criteria = len(pwd) >= min_length and has_digit and has_upper and has_special
+    all_criteria = (
+        len(pwd) >= min_length
+        and has_digit
+        and has_upper
+        and has_special
+        and has_lower
+    )
 
-    if pwd in forbidden_passwords or len(pwd) < min_length:
+
+    if pwd.lower() in forbidden_passwords or len(pwd) < min_length:
         return "Заборонений"
 
-    elif has_digit or has_upper or has_special or has_lower:
-        return "Слабкий"
-    elif len(pwd) >= min_length and (has_digit or has_upper or has_special):
-        return "Середній"
-    elif all_criteria and len(pwd) < min_length + 4:
-        return "Сильний"
-    elif all_criteria and len(pwd) >= min_length + 4 and passwords.count(pwd) == 1:
+
+    if all_criteria and len(pwd) >= min_length + 4:
         return "Дуже сильний"
 
 
-if __name__ == "__main__":
+    if all_criteria:
+        return "Сильний"
+
+
+    if len(pwd) >= min_length and (has_digit or has_upper or has_special):
+        return "Середній"
+
+
+    return "Слабкий"
+
+
+def main():
+
     for _ in range(3):
         random_index = random.randint(0, len(passwords) - 1)
         chosen_password = passwords[random_index]
@@ -90,3 +102,7 @@ if __name__ == "__main__":
     print("-" * 43)
     for pwd, cat in results:
         print(f"{pwd:<20} | {cat:<20}")
+
+
+if __name__ == "__main__":
+    main()
