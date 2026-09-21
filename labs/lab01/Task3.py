@@ -30,6 +30,12 @@ users_to_register = (
     ("olga_k", "StrongPass_88"),
 )
 
+test_cases = [
+    ("alex_admin", "SecurePass2026!"),
+    ("kate_m", "MyPassword123"),
+    ("dev_guy", "PythonDeveloper#1"),
+]
+
 PERSONAL_SALT = str(VARIANT_NUMBER).zfill(5)
 
 
@@ -179,32 +185,28 @@ def main():
         f"Студент: {STUDENT_NAME} | Група: {GROUP_NAME} | Варіант: {VARIANT_NUMBER}\n"
     )
 
+
+    print("=== 1. Створення бази даних ===")
+    create_users(users_to_register)
+
+    print("\n=== 2. Читання та вивід бази ===")
+    users_db = read_users_db()
+    print_users_table(users_db)
+
+    print("\n=== 3. Тест авторизації ===")
+    for username, password in test_cases:
+        is_logged_in = login(username, password)
+        status = "Успішно" if is_logged_in else "Відхилено"
+
+        print(f"Вхід для {username:<12}: {status}")
+
+
+    print("\n=== 4. Тест винятку (порожні дані) ===")
     try:
-        print("=== 1. Створення бази даних ===")
-        create_users(users_to_register)
-
-        print("\n=== 2. Читання та вивід бази ===")
-        users_db = read_users_db()
-        print_users_table(users_db)
-
-        print("\n=== 3. Тест авторизації ===")
-        print("alex_admin (вірно):", login("alex_admin", "SecurePass2026!"))
-        print("kate_m (невірно):", login("kate_m", "WrongPass123"))
-
-
-        print("\n=== 4. Тест винятку (порожні дані) ===")
         login("", "")
-
-    except ValidationError as e:
-        print(f"[ValidationError]: {e}")
     except ValueError as e:
         print(f"[ValueError]: {e}")
-    except FileNotFoundError as e:
-        print(f"[FileNotFoundError]: {e}")
-    except PermissionError as e:
-        print(f"[PermissionError]: {e}")
-    except OSError as e:
-        print(f"[IOError]: {e}")
+
 
 
 if __name__ == "__main__":
