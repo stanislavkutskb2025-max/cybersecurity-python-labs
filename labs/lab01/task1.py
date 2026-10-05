@@ -39,29 +39,20 @@ def get_password_category(pwd):
     has_lower = any(c.islower() for c in pwd)
 
     all_criteria = (
-        len(pwd) >= min_length
-        and has_digit
-        and has_upper
-        and has_special
-        and has_lower
+        len(pwd) >= min_length and has_digit and has_upper and has_special and has_lower
     )
-
 
     if pwd.lower() in forbidden_passwords or len(pwd) < min_length:
         return "Заборонений"
 
-
     if all_criteria and len(pwd) >= min_length + 4:
         return "Дуже сильний"
-
 
     if all_criteria:
         return "Сильний"
 
-
     if len(pwd) >= min_length and (has_digit or has_upper or has_special):
         return "Середній"
-
 
     return "Слабкий"
 

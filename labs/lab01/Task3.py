@@ -103,10 +103,8 @@ def print_users_table(users_db: list):
         print("Немає даних для відображення.")
         return
 
-
     print(f"{'Логін':<20} | {'Хеш пароля':<56}")
     print("-" * 80)
-
 
     for username, hash_value in users_db:
         print(f"{username:<20} | {hash_value:<56}")
@@ -178,13 +176,11 @@ def login(username: str, password: str) -> bool:
     return False
 
 
-
 # 8.
 def main():
     print(
         f"Студент: {STUDENT_NAME} | Група: {GROUP_NAME} | Варіант: {VARIANT_NUMBER}\n"
     )
-
 
     print("=== 1. Створення бази даних ===")
     create_users(users_to_register)
@@ -200,13 +196,11 @@ def main():
 
         print(f"Вхід для {username:<12}: {status}")
 
-
     print("\n=== 4. Тест винятку (порожні дані) ===")
     try:
         login("", "")
     except ValueError as e:
         print(f"[ValueError]: {e}")
-
 
 
 if __name__ == "__main__":

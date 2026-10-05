@@ -93,13 +93,8 @@ def main():
     for username in all_users_to_test:
         for res_name, res_level in resources:
             level_label = security_levels[res_level - 1]
-            result = check_access(
-                username, (res_name, res_level), users, blocked_users
-            )
-            print(
-                f"{username:<15} | {res_name:<18} | {level_label:<15} | {result:<30}"
-            )
-
+            result = check_access(username, (res_name, res_level), users, blocked_users)
+            print(f"{username:<15} | {res_name:<18} | {level_label:<15} | {result:<30}")
 
 
 if __name__ == "__main__":
