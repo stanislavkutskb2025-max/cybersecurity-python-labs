@@ -3,6 +3,7 @@ import os
 import hmac
 import re
 from datetime import datetime, timezone
+from dataclasses import dataclass
 
 
 EMAIL_REGEX = re.compile(r"^[a-zA-Z][a-zA-Z0-9_]{2,63}@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
@@ -120,11 +121,51 @@ class Session:
 
         return elapsed_time.total_seconds() < timeout_sec
 
+@dataclass
+class AuditRecord:
+    timestamp: datetime
+    username: str
+    action: str
 
+class AuditLog:
+    def __init__(self, logs: list[AuditRecord]) -> None:
+        self.logs: list[AuditRecord] = []
 
+    def add_log(self, username: str, action: str) -> None:
+        now = datetime.now(timezone.utc)
+        record = AuditRecord(
+            timestamp=now,
+            username=username,
+            action=action
+        )
+        self.logs.append(record)
+    def show_all(self) -> None:
+        if not self.logs:
+            print("Журнал аудиту порожній.")
+            return
+        for record in self.logs:
+            formatted_time = record.timestamp.strftime("%Y-%m-%d %H:%M:%S UTC")
+            print(f"[{formatted_time}] User: {record.username} | Action: {record.action}")
 
+class UserAccount:
+    def __init__(self,
+                 user: User,
+                 session:Session | None = None,
+                 audit_log: AuditLog | None = None
+                  ) -> None:
+        self.user = user
+        self.session = session
+        self.audit_log = audit_log
 
-
+    def login(self, username: str, password: str, ip: str) -> bool:
+        if username == self.user.username and self.user.check_password(password):
+            self.session = Session(ip)
+            self.session.touch()
+            self.audit_log.add_log(username, "login_success")
+            return True
+        else:
+            self.audit_log.add_log(username, "login_failure")
+            return False
 
 
 
