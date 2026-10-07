@@ -67,13 +67,13 @@ python -m labs.lab02.main demo
 #### 1. Генерація еталонного стану (Baseline)
 Створює еталонний файл `baseline.json` на основі поточного вмісту монітореної директорії:
 ```bash
-python -m labs.lab02.task2 generate
+python -m labs.lab02.main generate
 ```
 
 #### 2. Перевірка цілісності файлів (Check)
 Порівнює поточний стан файлів у монітореній директорії з еталонним файлом `baseline.json` та виявляє модифіковані, нові або видалені файли:
 ```bash
-python -m labs.lab02.task2 check
+python -m labs.lab02.main check
 ```
 
 
