@@ -4,7 +4,7 @@ from pathlib import Path
 import hashlib
 import json
 import logging
-import argparse
+
 
 @dataclass
 class FileInfo:
@@ -113,29 +113,7 @@ def setup_logging(log_file: Path):
         ]
     )
 
-def main():
-    parser = argparse.ArgumentParser(description="File Integrity Monitor (FIM)")
 
-    subparsers = parser.add_subparsers(dest="command", required=True, help="Режим роботи")
 
-    gen_parser = subparsers.add_parser("generate", help="Згенерувати еталонний baseline.json")
-    gen_parser.add_argument("--dir", type=Path, default=Path("labs/lab02/data/monitored"), help="Шлях до монітореної папки")
-    gen_parser.add_argument("--baseline", type=Path, default=Path("labs/lab02/data/baseline.json"), help="Шлях до baseline.json")
 
-    check_parser = subparsers.add_parser("check", help="Перевірити цілісність файлів")
-    check_parser.add_argument("--dir", type=Path, default=Path("labs/lab02/data/monitored"), help="Шлях до монітореної папки")
-    check_parser.add_argument("--baseline", type=Path, default=Path("labs/lab02/data/baseline.json"), help="Шлях до baseline.json")
-    check_parser.add_argument("--log-file", type=Path, default=Path("fim.log"), help="Шлях до файла логів")
 
-    args = parser.parse_args()
-
-    if args.command == "generate":
-        generate_baseline(args.dir, args.baseline)
-        print(f"Базовий стан успішно збережено у {args.baseline}!")
-
-    elif args.command == "check":
-        setup_logging(args.log_file)
-        check_integrity(args.dir, args.baseline)
-
-if __name__ == "__main__":
-    main()

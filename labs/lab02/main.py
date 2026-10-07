@@ -1,6 +1,7 @@
 import sys
 from datetime import datetime, timedelta, timezone
-
+from pathlib import Path
+import argparse
 
 from labs.lab02.task1 import (
     SESSION_TIMEOUT_SEC,
@@ -8,7 +9,7 @@ from labs.lab02.task1 import (
     AuditLog,
     UserAccount,
 )
-
+from labs.lab02.task2 import generate_baseline, check_integrity, setup_logging
 
 def run_demo():
     print("=== ПОЧАТОК ДЕМОНСТРАЦІЇ ===")
@@ -74,9 +75,49 @@ def run_demo():
 
     print("\n=== ДЕМОНСТРАЦІЮ ЗАВЕРШЕНО ===")
 
+def main():
+    parser = argparse.ArgumentParser(description="File Integrity Monitor (FIM)")
 
-if __name__ == "__main__":
+    subparsers = parser.add_subparsers(dest="command",  help="Режим роботи")
+
+    subparsers.add_parser("demo", help="Запустити демонстрацію Task 1")
+
+    gen_parser = subparsers.add_parser("generate", help="Згенерувати еталонний baseline.json")
+    gen_parser.add_argument("--dir", type=Path, default=Path("labs/lab02/data/monitored"), help="Шлях до монітореної папки")
+    gen_parser.add_argument("--baseline", type=Path, default=Path("labs/lab02/data/baseline.json"), help="Шлях до baseline.json")
+
+    check_parser = subparsers.add_parser("check", help="Перевірити цілісність файлів")
+    check_parser.add_argument("--dir", type=Path, default=Path("labs/lab02/data/monitored"), help="Шлях до монітореної папки")
+    check_parser.add_argument("--baseline", type=Path, default=Path("labs/lab02/data/baseline.json"), help="Шлях до baseline.json")
+    check_parser.add_argument("--log-file", type=Path, default=Path("fim.log"), help="Шлях до файла логів")
+
+    args = parser.parse_args()
+
+
     if len(sys.argv) > 1 and sys.argv[1] == "demo":
         run_demo()
+
+    elif args.command == "generate":
+        generate_baseline(args.dir, args.baseline)
+        print(f"Базовий стан успішно збережено у {args.baseline}!")
+
+    elif args.command == "check":
+        setup_logging(args.log_file)
+        check_integrity(args.dir, args.baseline)
+
     else:
+
+
         print("Для запуску демонстрації виконайте: python -m labs.lab02.main demo")
+        print("Для генерації еталонного baseline.json виконайте: python -m labs.lab02.main generate")
+        print("Для перевірки цілісності файлів виконайте: python -m labs.lab02.main check")
+
+
+if __name__ == "__main__":
+    main()
+
+
+
+
+
+
