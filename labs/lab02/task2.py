@@ -1,4 +1,3 @@
-
 from dataclasses import dataclass, asdict
 from pathlib import Path
 import hashlib
@@ -12,6 +11,7 @@ class FileInfo:
     hash_value: str
     size: int
     mtime: float
+
 
 def get_file_info(file_path: Path, base_dir: Path) -> FileInfo:
     relative_path = str(file_path.relative_to(base_dir))
@@ -28,8 +28,9 @@ def get_file_info(file_path: Path, base_dir: Path) -> FileInfo:
         path=relative_path,
         hash_value=hash_value,
         size=stat_info.st_size,
-        mtime=stat_info.st_mtime
+        mtime=stat_info.st_mtime,
     )
+
 
 def scan_directory(dir_path: Path) -> dict:
     result = {}
@@ -39,12 +40,14 @@ def scan_directory(dir_path: Path) -> dict:
             result[info.path] = asdict(info)
     return result
 
+
 def generate_baseline(dir_path: Path, baseline_path: Path):
     data = scan_directory(dir_path)
 
     baseline_path.parent.mkdir(parents=True, exist_ok=True)
     with open(baseline_path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=4, ensure_ascii=False)
+
 
 def check_integrity(dir_path: Path, baseline_path: Path):
     if not baseline_path.exists():
@@ -92,7 +95,7 @@ def check_integrity(dir_path: Path, baseline_path: Path):
             logging.warning(f"[MODIFIED] Змінено файл: {path}")
 
         for path in created:
-            size = current_data[path]['size']
+            size = current_data[path]["size"]
             print(f"[CREATED]  {path} (Size: {size} B)")
             logging.warning(f"[CREATED] Новий файл: {path}")
 
@@ -100,8 +103,15 @@ def check_integrity(dir_path: Path, baseline_path: Path):
             print(f"[DELETED]  {path}")
             logging.warning(f"[DELETED] Видалено файл: {path}")
 
-        log_file_name = logging.getLogger().handlers[0].baseFilename if logging.getLogger().handlers else 'log file'
-        print(f"\n[WARNING] Security alerts detected! Check audit log at {log_file_name}")
+        log_file_name = (
+            logging.getLogger().handlers[0].baseFilename
+            if logging.getLogger().handlers
+            else "log file"
+        )
+        print(
+            f"\n[WARNING] Security alerts detected! Check audit log at {log_file_name}"
+        )
+
 
 def setup_logging(log_file: Path):
     logging.basicConfig(
@@ -109,11 +119,6 @@ def setup_logging(log_file: Path):
         format="[%(levelname)s] %(message)s",
         handlers=[
             logging.FileHandler(log_file, encoding="utf-8"),
-            logging.StreamHandler()
-        ]
+            logging.StreamHandler(),
+        ],
     )
-
-
-
-
-
