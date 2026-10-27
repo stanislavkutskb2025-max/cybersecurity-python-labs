@@ -1,5 +1,6 @@
 import sqlite3
 from typing import Literal
+
 from fastapi import APIRouter, HTTPException, Query, status
 
 import labs.lab03.repository as repo

@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from shared.student import STUDENT_NAME, GROUP_NAME, VARIANT_NUMBER
+from shared.student import GROUP_NAME, STUDENT_NAME, VARIANT_NUMBER
 
 router = APIRouter(tags=["System"])
 

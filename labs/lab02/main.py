@@ -1,7 +1,7 @@
+import argparse
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-import argparse
 
 from labs.lab02.task1 import (
     SESSION_TIMEOUT_SEC,
@@ -9,7 +9,7 @@ from labs.lab02.task1 import (
     AuditLog,
     UserAccount,
 )
-from labs.lab02.task2 import generate_baseline, check_integrity, setup_logging
+from labs.lab02.task2 import check_integrity, generate_baseline, setup_logging
 
 
 def run_demo():

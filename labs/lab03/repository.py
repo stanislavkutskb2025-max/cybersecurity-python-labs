@@ -1,6 +1,7 @@
-from labs.lab03.database import get_connection
-from contextlib import closing
 import sqlite3
+from contextlib import closing
+
+from labs.lab03.database import get_connection
 
 
 # Створення категорії, отримання списку категорій і видалення порожньої категорії.
@@ -13,44 +14,41 @@ def get_categories():
 
 
 def create_category(name: str):
-    with closing(get_connection()) as conn:
-        with conn:
-            cursor = conn.cursor()
-            cursor.execute("INSERT INTO categories (name) VALUES (?)", (name,))
-            category_id = cursor.lastrowid
-            return {"id": category_id, "name": name}
+    with closing(get_connection()) as conn, conn:
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO categories (name) VALUES (?)", (name,))
+        category_id = cursor.lastrowid
+        return {"id": category_id, "name": name}
 
 
 def delete_category(category_id: int):
-    with closing(get_connection()) as conn:
-        with conn:
-            cursor = conn.cursor()
-            cursor.execute(
-                "SELECT COUNT(*) FROM records WHERE category_id = ?", (category_id,)
-            )
-            count = cursor.fetchone()[0]
-            if count > 0:
-                raise sqlite3.IntegrityError("Категорія містить записи")
+    with closing(get_connection()) as conn, conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            "SELECT COUNT(*) FROM records WHERE category_id = ?", (category_id,)
+        )
+        count = cursor.fetchone()[0]
+        if count > 0:
+            raise sqlite3.IntegrityError("Категорія містить записи")
 
-            cursor.execute("DELETE FROM categories WHERE id = ?", (category_id,))
-            return cursor.rowcount > 0
+        cursor.execute("DELETE FROM categories WHERE id = ?", (category_id,))
+        return cursor.rowcount > 0
 
 
 # Додавання запису й отримання запису за id
 def create_record(record_data: dict):
-    with closing(get_connection()) as conn:
-        with conn:
-            cursor = conn.cursor()
-            cursor.execute(
-                """
+    with closing(get_connection()) as conn, conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            """
                             INSERT INTO RECORDS (code, title, category_id,value, status) VALUES 
-                            (:code, :title, :category_id, :value, :status)
+                            (:code, :title, :category_id, :value, :status)                            
                             """,
-                record_data,
-            )
+            record_data,
+        )
 
-            record_id = cursor.lastrowid
-            return get_record_by_id(record_id)
+        record_id = cursor.lastrowid
+        return get_record_by_id(record_id)
 
 
 def get_record_by_id(record_id: int):
@@ -125,13 +123,12 @@ def get_records(
 
 # Повного оновлення змінюваних полів запису; id має залишатися незмінним.
 def update_record(record_id: int, record_data: dict) -> dict | None:
-    with closing(get_connection()) as conn:
-        with conn:
-            cursor = conn.cursor()
-            parameters = dict(record_data)
-            parameters["id"] = record_id
-            cursor.execute(
-                """  UPDATE records
+    with closing(get_connection()) as conn, conn:
+        cursor = conn.cursor()
+        parameters = dict(record_data)
+        parameters["id"] = record_id
+        cursor.execute(
+            """  UPDATE records
                                 SET code = :code,
                                     title = :title,
                                     category_id = :category_id,
@@ -139,35 +136,31 @@ def update_record(record_id: int, record_data: dict) -> dict | None:
                                     status = :status
                                 WHERE id = :id
                                 """,
-                parameters,
-            )
-            if cursor.rowcount == 0:
-                return None
-            return get_record_by_id(record_id)
+            parameters,
+        )
+        if cursor.rowcount == 0:
+            return None
+        return get_record_by_id(record_id)
 
 
 # Видалення запису
 def delete_record(record_id: int) -> bool:
-    with closing(get_connection()) as conn:
-        with conn:
-            cursor = conn.cursor()
-            cursor.execute("DELETE FROM records WHERE id = ?", (record_id,))
+    with closing(get_connection()) as conn, conn:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM records WHERE id = ?", (record_id,))
 
-            if cursor.rowcount > 0:
-                return True
-            return False
+        return cursor.rowcount > 0
 
 
 # Пакетного додавання записів у межах однієї транзакції
 def create_records_batch(records_data: list[dict]) -> bool:
-    with closing(get_connection()) as conn:
-        with conn:
-            cursor = conn.cursor()
-            cursor.executemany(
-                """
-                            INSERT INTO records (code, title, category_id, value, status)
-                            VALUES (:code, :title, :category_id, :value, :status)
-                            """,
-                records_data,
-            )
-            return cursor.rowcount == len(records_data)
+    with closing(get_connection()) as conn, conn:
+        cursor = conn.cursor()
+        cursor.executemany(
+            """
+                        INSERT INTO records (code, title, category_id, value, status)
+                        VALUES (:code, :title, :category_id, :value, :status)
+                        """,
+            records_data,
+        )
+        return cursor.rowcount == len(records_data)

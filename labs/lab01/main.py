@@ -1,4 +1,4 @@
-from labs.lab01 import task1, Task2, Task3
+from labs.lab01 import Task2, Task3, task1
 
 
 def main() -> None:

@@ -1,5 +1,7 @@
 import sqlite3
+
 from fastapi import APIRouter, HTTPException, status
+
 import labs.lab03.repository as repo
 from labs.lab03.schemas import CategoryCreate, CategoryRead
 
