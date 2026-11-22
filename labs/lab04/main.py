@@ -1,35 +1,46 @@
+from pathlib import Path
+from typing import Any
+
 import argparse
 import json
 import re
 import sys
-from json import JSONDecodeError
-from pathlib import Path
-from typing import Any, Sequence
+
 import requests
+
 from labs.lab04 import analysis, api_client
 from shared.student import VARIANT_NUMBER
 
 CVE_PATTERN = re.compile(r"^CVE-[0-9]{4}-[0-9]{4,}$")
+
 
 def load_response(path: Path) -> dict[str, Any]:
     """Читає локальний JSON-файл відповіді NVD"""
     with path.open("r", encoding="utf-8") as file:
         data = json.load(file)
     if not isinstance(data, dict):
-        raise ValueError("Файл відповіді не містить JSON-об'єкт")
+        raise TypeError("Файл відповіді не містить JSON-об'єкт")
     return data
+
 
 def _print_error(message: str) -> None:
     print(message, file=sys.stderr)
 
+
 def main(argv: list[str] | None = None) -> int:
-    if isinstance(VARIANT_NUMBER, bool) or not isinstance(VARIANT_NUMBER, int) or not (1 <= VARIANT_NUMBER <= 15):
+    if (
+        isinstance(VARIANT_NUMBER, bool)
+        or not isinstance(VARIANT_NUMBER, int)
+        or not (1 <= VARIANT_NUMBER <= 15)
+    ):
         _print_error("Некоректний номер варіанта студента.")
         return 2
 
     parser = argparse.ArgumentParser(description="Перевірка запису CVE з NVD API")
     parser.add_argument("--cve", required=True, help="Ідентифікатор CVE")
-    parser.add_argument("--input", type=Path, default=None, help="Шлях до локального JSON-файлу")
+    parser.add_argument(
+        "--input", type=Path, default=None, help="Шлях до локального JSON-файлу"
+    )
 
     args = parser.parse_args(argv)
     if CVE_PATTERN.fullmatch(args.cve) is None:
@@ -65,6 +76,7 @@ def main(argv: list[str] | None = None) -> int:
     report = analysis.build_report(record, args.cve, VARIANT_NUMBER)
     print(json.dumps(report, ensure_ascii=False, indent=2))
     return 0
+
 
 if __name__ == "__main__":
     raise SystemExit(main())
